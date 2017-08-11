@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
 
   s.source_files = ['Classes/**/*']
     
-  s.frameworks = 'CoreData', 'SystemConfiguration', 'Security', 'MobileCoreServices', 'CFNetwork', 'MessageUI', 'Accounts', 'Social', 'CoreLocation', 'AddressBook', 'AdSupport'
+  s.frameworks = 'CoreData', 'SystemConfiguration', 'Security', 'MobileCoreServices', 'CFNetwork', 'MessageUI', 'Accounts', 'Social', 'CoreLocation', 'AddressBook', 'AdSupport', 'FirebaseCore', 'FirebaseAnalytics', 'FirebaseDatabase', 'FirebaseAuth', 'FirebaseInstanceID', 'FirebaseStorage', 'GTMSessionFetcher'
   s.library = 'icucore', 'c++', 'sqlite3'
 
   s.subspec 'FirebaseAdapter' do |fi| 
@@ -24,21 +24,18 @@ Pod::Spec.new do |s|
   
     fi.dependency 'ChatSDKCore'  
     fi.dependency 'ChatSDKFirebaseAdapter/FirebaseFrameworks'
-
   end
 
   s.subspec 'FirebaseFrameworks' do |ff| 
-  
-    ff.dependency 'GTMSessionFetcher', '~>1.1'
-    ff.dependency 'GoogleToolboxForMac/NSData+zlib', '~>2.1.1'
-  
-    ff.vendored_frameworks = "FirebaseFrameworks/*"
 
-    # Import the Firebase frameworks to the main project (gets rid of missing header errors)
-    ff.user_target_xcconfig = {
-      "FRAMEWORK_SEARCH_PATHS" => '"${PODS_ROOT}/../../ChatSDK/ChatSDKFirebaseAdapter/FirebaseFrameworks"'
-    }
+    ff.dependency 'Firebase', '~> 4.0'
+    ff.dependency 'Firebase/Core', '~> 4.0'
+    ff.dependency 'Firebase/Auth', '~> 4.0'
+    ff.dependency 'Firebase/Analytics', '~> 4.0'
+    ff.dependency 'Firebase/Database', '~> 4.0'
+    ff.dependency 'Firebase/Storage', '~> 4.0'
 
+    ff.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(PROJECT_DIR)/FirebaseCore/Frameworks $(PROJECT_DIR)/FirebaseAnalytics/Frameworks $(PROJECT_DIR)/FirebaseDatabase/Frameworks $(PROJECT_DIR)/FirebaseAuth/Frameworks $(PROJECT_DIR)/FirebaseInstanceID/Frameworks $(PROJECT_DIR)/FirebaseStorage/Frameworks' }
   end
 
   s.subspec 'SocialFrameworks' do |sf| 
