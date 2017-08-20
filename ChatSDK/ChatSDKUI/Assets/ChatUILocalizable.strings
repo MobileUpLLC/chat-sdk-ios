@@ -86,11 +86,11 @@
 "bStickerMessage" = "Sticker Message";
 "bDone" = "Done";
 "bEdit" = "Edit";
-"bNoMessages" = "No messages...";
+"bNoMessages" = "Нет сообщений...";
 "bGroupName" = "Group Name";
-"bLastSeen_at_" = "Last seen %@ at %@";
-"b_at_" = "%@ at %@";
-"bToday" = "Today";
+"bLastSeen_at_" = "Последний раз был(-а) в сети %@ в %@";
+"b_at_" = "%@ в %@";
+"bToday" = "Сегодня";
 "bYesterday" = "Вчера";
 
 "bSearchTerm" = "Search Term";
