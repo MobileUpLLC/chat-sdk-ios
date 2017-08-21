@@ -65,9 +65,9 @@
 "bChooseExistingPhoto" = "Choose existing photo";
 "bChooseExistingVideo" = "Choose existing video";
 "bCurrentLocation" = "Current location";
-"bSend" = "Send";
+"bSend" = "Отпр.";
 "bRec" = "Record";
-"bWriteSomething" = "Write something...";
+"bWriteSomething" = "Написать сообщение...";
 "bName" = "Name";
 "bTapHereForContactInfo" = "tap here for contact info";
 "bPhoneNumber" = "Phone Number";
@@ -86,12 +86,12 @@
 "bStickerMessage" = "Sticker Message";
 "bDone" = "Done";
 "bEdit" = "Edit";
-"bNoMessages" = "No messages...";
+"bNoMessages" = "Нет сообщений...";
 "bGroupName" = "Group Name";
-"bLastSeen_at_" = "Last seen %@ at %@";
-"b_at_" = "%@ at %@";
-"bToday" = "Today";
-"bYesterday" = "Yesterday";
+"bLastSeen_at_" = "Последний раз был(-а) в сети %@ в %@";
+"b_at_" = "%@ в %@";
+"bToday" = "Сегодня";
+"bYesterday" = "Вчера";
 
 "bSearchTerm" = "Search Term";
 
@@ -100,7 +100,7 @@
 "bSearchedContacts" = "Searched contacts";
 "bNearbyContacts" = "Nearby contacts";
 
-"bTyping" = "Typing...";
+"bTyping" = "печатает...";
 "bRefreshingUsers" = "Refreshing Users...";
 
 "bSelectYourSearch" = "Select your search";
@@ -124,7 +124,7 @@
 "bSave" = "Save";
 "bSaving" = "Saving";
 
-"b_Ago" = "%@ ago";
+"b_Ago" = "%@ назад";
 
 "b_LeftTheGroup" = "%@ left the group";
 "b_JoinedTheGroup" = "%@ joined the group";
