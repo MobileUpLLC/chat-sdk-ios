@@ -8,8 +8,8 @@
 
 #import "BFirebasePublicThreadHandler.h"
 
-#import <ChatSDKFirebaseAdapter/ChatFirebaseAdapter.h>
-#import <ChatSDKCore/ChatCore.h>
+#import "ChatFirebaseAdapter.h"
+//#import <ChatSDKCore/ChatCore.h>
 
 @implementation BFirebasePublicThreadHandler
 
@@ -23,14 +23,23 @@
     // Before we create the thread start an undo grouping
     // that means that if it fails we can undo changed to the database
     [[BStorageManager sharedManager].a beginUndoGroup];
-    id<PThread> threadModel = [[BStorageManager sharedManager].a createEntity:bThreadEntity];
+
+    id<PThread> threadModel = Nil;
+
+    if(entityID) {
+        threadModel = [[BStorageManager sharedManager].a fetchEntityWithID:entityID withType:bThreadEntity];
+    }
+    
+    if(!threadModel) {
+        threadModel = [[BStorageManager sharedManager].a createEntity:bThreadEntity];
+    }
     
     threadModel.creationDate = [NSDate date];
     
     id<PUser> currentUserModel = NM.currentUser;
     
     threadModel.creator = currentUserModel;
-    threadModel.type = @(bThreadFilterPublic);
+    threadModel.type = @(bThreadTypePublicGroup);
     threadModel.name = name;
     threadModel.entityID = entityID ? entityID : Nil;
     
@@ -63,7 +72,7 @@
         return promise;
         
     },^id(NSError * error) {
-        [[BStorageManager sharedManager].a undo];
+        //[[BStorageManager sharedManager].a undo];
         return error;
     });
     

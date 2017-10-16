@@ -33,6 +33,7 @@
         self.title = [NSBundle t:bContacts];
         self.tabBarItem.image = [NSBundle chatUIImageNamed: @"icn_30_contact.png"];
         _contacts = [NSMutableArray new];
+        _notificationList = [BNotificationObserverList new];
     }
     return self;
 }
@@ -44,10 +45,6 @@
     self.navigationItem.rightBarButtonItem =  [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                                             target:self
                                                                                             action:@selector(addContacts)];
-    
-    [[NSNotificationCenter defaultCenter] addObserverForName:bNotificationUserUpdated object:Nil queue:Nil usingBlock:^(NSNotification * notification) {
-        [self reloadData];
-    }];
     
     if (!searchController) {
         
@@ -78,7 +75,14 @@
     
     // This code fixes a small issue when the search view is shown for the first time
     if (_contacts.count) {
-        [self.tableView setContentOffset:CGPointMake(0, -20) animated:NO];
+        
+        // iOS 11 seems to require a different offset to keep the search controller hidden
+        if ([UIDevice currentDevice].systemVersion.intValue >= 11) {
+            [self.tableView setContentOffset:CGPointMake(0, -8) animated:NO];
+        }
+        else {
+            [self.tableView setContentOffset:CGPointMake(0, -20) animated:NO];
+        }
     }
     else {
         [self.tableView setContentOffset:CGPointMake(0, self.searchController.searchBar.frame.size.height) animated:NO];
@@ -90,10 +94,21 @@
     
     [self updateButtonStatusForInternetConnection];
     
-    _internetConnectionObserver = [[NSNotificationCenter defaultCenter] addObserverForName:kReachabilityChangedNotification object:nil queue:Nil usingBlock:^(NSNotification * notification) {
-        
-        [self updateButtonStatusForInternetConnection];
-    }];
+    [_notificationList add:[[NSNotificationCenter defaultCenter] addObserverForName:bNotificationUserUpdated
+                                                                             object:Nil
+                                                                              queue:Nil
+                                                                         usingBlock:^(NSNotification * notification) {
+                                                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                 [self reloadData];
+                                                                             });
+                                                                         }]];
+
+    
+    [_notificationList add:[[NSNotificationCenter defaultCenter] addObserverForName:kReachabilityChangedNotification object:nil queue:Nil usingBlock:^(NSNotification * notification) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateButtonStatusForInternetConnection];
+        });
+    }]];
     
     // We need to call this to ensure the search controller is correctly formatted when the view is shown
     [self viewDidLayoutSubviews];
@@ -102,19 +117,27 @@
 -(void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
+    [_notificationList dispose];
+    
     // This removes the active search once a user goes back to this page
     searchController.active = NO;
-    [[NSNotificationCenter defaultCenter] removeObserver:_internetConnectionObserver];
 }
 
 -(void) addContacts {
     
     __weak BContactsViewController * weakSelf = self;
     
+    NSDictionary * searchControllerNamesForType = [BInterfaceManager sharedManager].a.additionalSearchControllerNames;
+    
+    if(searchControllerNamesForType.allKeys.count == 0) {
+        // Just use name search
+        [self openSearchViewWithType:bSearchTypeNameSearch];
+        return;
+    }
+    
     // We want to create an action sheet which will allow users to choose how they add their contacts
     UIAlertController * view = [UIAlertController alertControllerWithTitle:[NSBundle t:bSearch] message:Nil preferredStyle:UIAlertControllerStyleActionSheet];
     view.popoverPresentationController.barButtonItem = self.navigationItem.rightBarButtonItem;
-    
     
     UIAlertAction * nameSearch = [UIAlertAction actionWithTitle:[NSBundle t:bSearchWithName]
                                                           style:UIAlertActionStyleDefault
@@ -123,7 +146,6 @@
     }];
     
     // Add additional options
-    NSDictionary * searchControllerNamesForType = [BInterfaceManager sharedManager].a.additionalSearchControllerNames;
     for (NSString * key in searchControllerNamesForType.allKeys) {
         UIAlertAction * action = [UIAlertAction actionWithTitle:searchControllerNamesForType[key]
                                                              style:UIAlertActionStyleDefault

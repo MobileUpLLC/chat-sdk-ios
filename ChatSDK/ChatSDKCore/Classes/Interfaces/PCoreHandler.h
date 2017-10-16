@@ -32,6 +32,7 @@
  * @brief Mark the user as online
  */
 -(void) setUserOnline;
+-(void) setUserOffline;
 
 /**
  * @brief Connect to the server
@@ -95,6 +96,11 @@
 -(RXPromise *) sendMessageWithText: (NSString *) text withThreadEntityID: (NSString *) threadID;
 
 /**
+ * @brief Send different types of message to a particular thread with meta data for the message
+ */
+-(RXPromise *) sendMessageWithText:(NSString *)text withThreadEntityID:(NSString *)threadID withMetaData: (NSDictionary *)meta;
+
+/**
  * @brief Send a message object
  */
 -(RXPromise *) sendMessage: (id<PMessage>) messageModel;
@@ -128,6 +134,10 @@
  * @brief Get a list of threads with a particular type that contain a particluar set of users
  */
 -(NSArray *) threadsWithUsers: (NSArray *) users type: (bThreadType) type;
+
+@optional
+
+
 
 @end
 

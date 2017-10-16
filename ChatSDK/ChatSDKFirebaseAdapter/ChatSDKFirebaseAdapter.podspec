@@ -18,24 +18,21 @@ Pod::Spec.new do |s|
 
   s.subspec 'FirebaseAdapter' do |fi| 
 
-    fi.pod_target_xcconfig = { 
-      "ENABLE_BITCODE" => 'false'
-    }
-  
     fi.dependency 'ChatSDKCore'  
+
     fi.dependency 'ChatSDKFirebaseAdapter/FirebaseFrameworks'
   end
 
   s.subspec 'FirebaseFrameworks' do |ff| 
 
-    ff.dependency 'Firebase', '~> 4.0'
-    ff.dependency 'Firebase/Core', '~> 4.0'
-    ff.dependency 'Firebase/Auth', '~> 4.0'
-    ff.dependency 'Firebase/Analytics', '~> 4.0'
-    ff.dependency 'Firebase/Database', '~> 4.0'
-    ff.dependency 'Firebase/Storage', '~> 4.0'
+   ff.dependency 'Firebase', '~> 4.0'
+   ff.dependency 'Firebase/Core', '~> 4.0'
+   ff.dependency 'Firebase/Auth', '~> 4.0'
+   ff.dependency 'Firebase/Analytics', '~> 4.0'
+   ff.dependency 'Firebase/Database', '~> 4.0'
+   ff.dependency 'Firebase/Storage', '~> 4.0'
 
-    ff.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(PROJECT_DIR)/FirebaseCore/Frameworks $(PROJECT_DIR)/FirebaseAnalytics/Frameworks $(PROJECT_DIR)/FirebaseDatabase/Frameworks $(PROJECT_DIR)/FirebaseAuth/Frameworks $(PROJECT_DIR)/FirebaseInstanceID/Frameworks $(PROJECT_DIR)/FirebaseStorage/Frameworks' }
+   ff.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(PROJECT_DIR)/FirebaseCore/Frameworks $(PROJECT_DIR)/FirebaseAnalytics/Frameworks $(PROJECT_DIR)/FirebaseDatabase/Frameworks $(PROJECT_DIR)/FirebaseAuth/Frameworks $(PROJECT_DIR)/FirebaseInstanceID/Frameworks $(PROJECT_DIR)/FirebaseStorage/Frameworks' }
   end
 
   s.subspec 'SocialFrameworks' do |sf| 
@@ -133,5 +130,14 @@ Pod::Spec.new do |s|
 
 
 
+
+#     fi.dependency 'ChatSDKFirebaseAdapter/FirebaseFrameworks'
+   # fi.dependency 'Firebase/Core'
+   # fi.dependency 'Firebase/Auth'
+   # fi.dependency 'Firebase/Database'
+   # fi.dependency 'Firebase/Storage'
+   # fi.dependency 'Firebase/Messaging'
+
+ # end
      
 end

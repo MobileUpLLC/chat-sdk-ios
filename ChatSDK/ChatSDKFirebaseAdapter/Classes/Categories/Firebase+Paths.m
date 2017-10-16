@@ -8,7 +8,7 @@
 
 #import "Firebase+Paths.h"
 
-#import <FirebaseDatabase/FirebaseDatabase.h>
+#import "ChatFirebaseAdapter.h"
 
 #import <ChatSDKCore/BSettingsManager.h>
 #import <ChatSDKCore/BKeys.h>
@@ -47,6 +47,10 @@
 
 +(FIRDatabaseReference *) userOnlineRef: (NSString *) firebaseID {
     return [[self userRef: firebaseID] child:bOnlinePath];
+}
+
++(FIRDatabaseReference *) onlineRef: (NSString *) firebaseID {
+    return [[[self firebaseRef] child:bOnlinePath] child:firebaseID];
 }
 
 #pragma Flag ref
