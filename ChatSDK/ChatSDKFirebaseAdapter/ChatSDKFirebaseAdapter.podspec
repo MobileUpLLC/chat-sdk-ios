@@ -14,124 +14,24 @@ Pod::Spec.new do |s|
   s.source_files = ['Classes/**/*']
     
   s.frameworks = 'CoreData', 'SystemConfiguration', 'Security', 'MobileCoreServices', 'CFNetwork', 'MessageUI', 'Accounts', 'Social', 'CoreLocation', 'AddressBook', 'AdSupport', 'FirebaseCore', 'FirebaseAnalytics', 'FirebaseDatabase', 'FirebaseAuth', 'FirebaseInstanceID', 'FirebaseStorage', 'GTMSessionFetcher'
+
   s.library = 'icucore', 'c++', 'sqlite3'
 
   s.subspec 'FirebaseAdapter' do |fi| 
 
-    fi.pod_target_xcconfig = { 
-      "ENABLE_BITCODE" => 'false'
-    }
-  
-    fi.dependency 'ChatSDKCore'  
-    fi.dependency 'ChatSDKFirebaseAdapter/FirebaseFrameworks'
-  end
+   fi.dependency 'ChatSDKCore'  
 
-  s.subspec 'FirebaseFrameworks' do |ff| 
+   fi.dependency 'Firebase', '~> 4.0'
+   fi.dependency 'Firebase/Core', '~> 4.0'
+   fi.dependency 'Firebase/Auth', '~> 4.0'
+   fi.dependency 'Firebase/Analytics', '~> 4.0'
+   fi.dependency 'Firebase/Database', '~> 4.0'
+   fi.dependency 'Firebase/Storage', '~> 4.0'
+   fi.dependency 'Firebase/Messaging', '~> 4.0'
 
-    ff.dependency 'Firebase', '~> 4.0'
-    ff.dependency 'Firebase/Core', '~> 4.0'
-    ff.dependency 'Firebase/Auth', '~> 4.0'
-    ff.dependency 'Firebase/Analytics', '~> 4.0'
-    ff.dependency 'Firebase/Database', '~> 4.0'
-    ff.dependency 'Firebase/Storage', '~> 4.0'
-
-    ff.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(PROJECT_DIR)/FirebaseCore/Frameworks $(PROJECT_DIR)/FirebaseAnalytics/Frameworks $(PROJECT_DIR)/FirebaseDatabase/Frameworks $(PROJECT_DIR)/FirebaseAuth/Frameworks $(PROJECT_DIR)/FirebaseInstanceID/Frameworks $(PROJECT_DIR)/FirebaseStorage/Frameworks' }
-  end
-
-  s.subspec 'SocialFrameworks' do |sf| 
-    
-    sf.vendored_frameworks = "SocialFrameworks/*.framework"
- 
-    sf.dependency "GTMOAuth2", "~> 1.0"
-    sf.dependency "GTMSessionFetcher/Core", "~> 1.1"
-    sf.dependency "GoogleToolboxForMac/NSDictionary+URLArguments", "~> 2.1"
-    sf.dependency "GoogleToolboxForMac/NSString+URLArguments", "~> 2.1"
-
- 
-#     authbase.resource_bundle = {
-#       'GoolgeSignIn' => ['SocialFrameworks/*.framework']
-#     }
-
-
-    # Import the Firebase frameworks to the main project (gets rid of missing header errors)
-#     sf.user_target_xcconfig = {
-#       "FRAMEWORK_SEARCH_PATHS" => '"${PODS_ROOT}/../../ChatSDK/ChatSDKFirebaseAdapter/Frameworks"'
-#     }
+   fi.xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '$(PROJECT_DIR)/FirebaseCore/Frameworks $(PROJECT_DIR)/FirebaseAnalytics/Frameworks $(PROJECT_DIR)/FirebaseDatabase/Frameworks $(PROJECT_DIR)/FirebaseAuth/Frameworks $(PROJECT_DIR)/FirebaseInstanceID/Frameworks $(PROJECT_DIR)/FirebaseStorage/Frameworks' }
 
   end
-
-  s.subspec 'AuthBase' do |authbase|
-    authbase.source_files = "FirebaseAuthUI/**/*.{h,m}"
-    authbase.resource_bundle = {
-      'FirebaseAuthUI' => ['FirebaseAuthUI/Strings/**/*',
-                           'FirebaseAuthUI/Resources/**/*',
-                           'FirebaseAuthUI/**/*.xib']
-    }
-    authbase.dependency 'ChatSDKFirebaseAdapter/FirebaseFrameworks'
-
-  end
-      
-  s.subspec 'Phone' do |phone|
-    phone.source_files = "FirebasePhoneAuthUI/**/*.{h,m}"
-    phone.resource_bundle = {
-      'FirebasePhoneAuthUI' => ['FirebasePhoneAuthUI/Strings/**/*',
-                                'FirebasePhoneAuthUI/Resources/**/*',
-                                'FirebasePhoneAuthUI/**/*.xib']
-    }
-    phone.dependency 'ChatSDKFirebaseAdapter/AuthBase'
-  end
-  
-  s.subspec 'Database' do |database|
-    database.source_files = "FirebaseDatabaseUI/**/*.{h,m}"
-    database.dependency 'ChatSDKFirebaseAdapter/FirebaseFrameworks'
-#     database.dependency 'Firebase/Database'
-#     database.ios.framework = 'FirebaseDatabase'
-#     database.xcconfig  = { 'FRAMEWORK_SEARCH_PATHS' => '"${PODS_ROOT}/FirebaseDatabase/Frameworks"','HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Firebase/**"' }
-  end
-  
-  s.subspec 'Facebook' do |facebook|
-    facebook.source_files = "FirebaseFacebookAuthUI/**/*.{h,m}"
-    facebook.resource_bundle = {
-      'FirebaseFacebookAuthUI' => ['FirebaseFacebookAuthUI/Strings/**/*',
-                                   'FirebaseFacebookAuthUI/Resources/**/*',
-                                   'FirebaseFacebookAuthUI/**/*.xib']
-    }
-    facebook.dependency 'ChatSDKFirebaseAdapter/AuthBase'
-    facebook.dependency 'FBSDKLoginKit', '~> 4.0'
-  end
-
-  s.subspec 'Google' do |google|
-    google.source_files = "FirebaseGoogleAuthUI/**/*.{h,m}"
-    google.resource_bundle = {
-      'FirebaseGoogleAuthUI' => ['FirebaseGoogleAuthUI/Strings/**/*',
-                                 'FirebaseGoogleAuthUI/Resources/**/*',
-                                 'FirebaseGoogleAuthUI/**/*.xib']
-    }
-    google.dependency 'ChatSDKFirebaseAdapter/AuthBase'
-     google.dependency 'ChatSDKFirebaseAdapter/SocialFrameworks'
-#     google.dependency 'GoogleSignIn', '~> 4.0'
-  end
-
-  s.subspec 'Storage' do |storage|
-    storage.source_files = "FirebaseStorageUI/**/*.{h,m}"
-    storage.dependency 'ChatSDKFirebaseAdapter/FirebaseFrameworks'
-    storage.dependency 'SDWebImage'
-  end
-
-  s.subspec 'Twitter' do |twitter|
-    twitter.source_files = "FirebaseTwitterAuthUI/*.{h,m}"
-    twitter.resource_bundle = {
-      'FirebaseTwitterAuthUI' => ['FirebaseTwitterAuthUI/Strings/**/*',
-                                  'FirebaseTwitterAuthUI/Resources/**/*',
-                                  'FirebaseTwitterAuthUI/**/*.xib']
-    }
-    twitter.dependency 'ChatSDKFirebaseAdapter/AuthBase'
-#     twitter.dependency 'TwitterKit', '~> 2.4'
-     twitter.dependency 'ChatSDKFirebaseAdapter/SocialFrameworks'
-    twitter.pod_target_xcconfig = { 'FRAMEWORK_SEARCH_PATHS' => '"$(PROJECT_DIR)/TwitterCore/iOS"' }
-  end
-
-
-
      
 end
+

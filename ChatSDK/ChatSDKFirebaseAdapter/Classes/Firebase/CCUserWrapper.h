@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 deluge. All rights reserved.
 //
 
-#import <ChatSDKFirebaseAdapter/BEntity.h>
+#import "BEntity.h"
 #import <ChatSDKCore/PUserWrapper.h>
 
 @class FIRUser;
@@ -80,7 +80,6 @@
  * @brief Manually set the user's status to offline
  */
 -(void) goOffline;
-
 /**
  * @brief Remove a thread from the user on disconnect
  */

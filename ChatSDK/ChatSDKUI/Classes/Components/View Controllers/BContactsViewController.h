@@ -10,13 +10,13 @@
 
 
 @class BSearchViewController;
+@class BNotificationObserverList;
 @protocol PUserConnection;
 
 @interface BContactsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, UISearchResultsUpdating> {
-    NSMutableArray<PUserConnection> * _contacts;
+    NSMutableArray * _contacts;
     __strong BSearchViewController * _searchViewController;
-    
-    id _internetConnectionObserver;
+    BNotificationObserverList * _notificationList;
 }
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -25,5 +25,6 @@
 
 -(NSMutableArray *) contacts;
 -(void) sortContacts;
+-(void) reloadData;
 
 @end

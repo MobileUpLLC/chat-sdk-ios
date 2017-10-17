@@ -14,15 +14,6 @@
 #import <ChatSDKCore/ChatCore.h>
 #import <ChatSDKUI/ChatUI.h>
 
-//
-//#import <ChatSDKUI/ChatUI.h>
-//#import <ChatSDK/BCoreDefines.h>
-//#import <ChatSDK/PAudioMessageHandler.h>
-//#import <ChatSDK/PVideoMessageHandler.h>
-//#import <ChatSDK/PStickerMessageHandler.h>
-//#import <ChatSDK/BCoreUtilities.h>
-//
-//#import <ChatSDK/PElmThread.h>
 
 // The distance to the bottom of the screen you need to be for the tableView to snap you to the bottom
 #define bTableViewRefreshHeight 300
@@ -446,11 +437,12 @@
             _locationViewNavigationController = [[UINavigationController alloc] initWithRootViewController:_locationViewController];
         }
         
-        CLLocationCoordinate2D coord = [BCoreUtilities locationForString: cell.message.textString];
+        float longitude = [[cell.message textAsDictionary][bMessageLongitude] floatValue];
+        float latitude = [[cell.message textAsDictionary][bMessageLatitude] floatValue];
         
         // Set the location and display the controller
-        _locationViewController.region = [BCoreUtilities regionForLongitude:coord.longitude latitude:coord.latitude];
-        _locationViewController.annotation = [BCoreUtilities annotationForLongitude:coord.longitude latitude:coord.latitude];
+        _locationViewController.region = [BCoreUtilities regionForLongitude:longitude latitude:latitude];
+        _locationViewController.annotation = [BCoreUtilities annotationForLongitude:longitude latitude:latitude];
 
         [self.navigationController presentViewController:_locationViewNavigationController animated:YES completion:Nil];
     }
@@ -504,6 +496,16 @@
 }
 
 #pragma Message Delegate
+
+-(RXPromise *) sendTextMessage: (NSString *) message withMeta: (NSDictionary *)meta {
+    
+    // Typing indicator
+    // Once a user sends a message they are no longer typing
+    [self userFinishedTypingWithState: bChatStateActive];
+    
+    NSString * newMessage = [message stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+    return [self handleMessageSend:[delegate  sendText:newMessage withMeta:meta]];
+}
 
 -(RXPromise *) sendTextMessage: (NSString *) message {
 
@@ -574,6 +576,13 @@
     return [_optionsHandler hide];
 }
 
+-(void) didResizeTextInputViewWithDelta:(float)delta {
+    if (fabsf(delta) > 0.01) {
+        [self setTableViewBottomContentInsetWithDelta:delta];
+        [self scrollToBottomOfTable:NO];
+    }
+}
+
 -(void) hideKeyboard {
     [_textInputView resignFirstResponder];
 }
@@ -617,7 +626,8 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // We can only flag posts in public threads
-    return delegate.threadType & bThreadFilterPublic ? YES : NO;
+    id<PElmMessage> message = [self messageForIndexPath:indexPath];
+    return ![message.userModel isEqual:NM.currentUser];
 }
 
 // This only works for iOS8
@@ -637,7 +647,7 @@
 
     }];
     
-    button.backgroundColor = message.flagged.intValue ? [UIColor greenColor] : [UIColor orangeColor]; //arbitrary color
+    button.backgroundColor = message.flagged.intValue ? [UIColor darkGrayColor] : [UIColor redColor];
     
     return @[button];
 }
@@ -744,6 +754,13 @@
     insets.bottom = inset;
     tableView.contentInset = insets;
 }
+
+-(void) setTableViewBottomContentInsetWithDelta: (float) delta {
+    UIEdgeInsets insets = tableView.contentInset;
+    insets.bottom += delta;
+    tableView.contentInset = insets;
+}
+
 
 -(void) scrollToBottomOfTable: (BOOL) animated {
     NSInteger lastSection = tableView.numberOfSections - 1;

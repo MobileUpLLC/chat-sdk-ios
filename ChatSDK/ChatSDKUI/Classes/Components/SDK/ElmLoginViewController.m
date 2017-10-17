@@ -88,8 +88,9 @@
     passwordField.text = @"";
     
     _internetConnectionObserver = [[NSNotificationCenter defaultCenter] addObserverForName:kReachabilityChangedNotification object:nil queue:Nil usingBlock:^(NSNotification * notification) {
-        
-        [self updateButtonStateForInternetConnection];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self updateButtonStateForInternetConnection];
+        });
     }];
     
 }
@@ -226,6 +227,10 @@
 }
 
 -(void) showHUD: (NSString *) message {
+    
+    if(_hud) {
+        [MBProgressHUD hideHUDForView:splashView animated:NO];
+    }
     
     //if (!_hud) {
         _hud = [MBProgressHUD showHUDAddedTo:splashView animated:NO];

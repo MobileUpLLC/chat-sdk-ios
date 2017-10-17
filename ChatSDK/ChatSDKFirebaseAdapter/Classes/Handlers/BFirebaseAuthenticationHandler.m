@@ -9,7 +9,7 @@
 #import "BFirebaseAuthenticationHandler.h"
 
 #import <ChatSDKCore/ChatCore.h>
-#import <ChatSDKFirebaseAdapter/ChatFirebaseAdapter.h>
+#import "ChatFirebaseAdapter.h"
 
 @implementation BFirebaseAuthenticationHandler
 
@@ -68,9 +68,7 @@
     NSError * error = Nil;
     if([[FIRAuth auth] signOut:&error]) {
         
-        // When a user logs out set their user offline
-        FIRDatabaseReference * userOnlineRef = [FIRDatabaseReference userOnlineRef:self.currentUserEntityID];
-        [userOnlineRef setValue:@NO];
+        [NM.core goOffline];
 
         _userListenersAdded = NO;
         
@@ -218,7 +216,13 @@
             // Update the user from the remote server
             return [user once].thenOnMain(^id(id<PUserWrapper> user_) {
                 
-                [NM.hook executeHookWithName:bHookUserAuthFinished data:@{bHookUserAuthFinished_PUser_User: user.model}];
+                [NM.hook executeHookWithName:bHookUserAuthFinished data:@{bHookUserAuthFinished_PUser: user.model}];
+                
+                NSString * avatarURL = [user.model imageURL];
+                if(!avatarURL || !avatarURL.length) {
+                    NSString * imageURL = [NSString stringWithFormat:@"http://flathash.com/%@.png", user.model.name];
+                    [user.model setImageURL:[imageURL stringByReplacingOccurrencesOfString:@" " withString:@""]];
+                }
                 
                 [NM.core save];
                 

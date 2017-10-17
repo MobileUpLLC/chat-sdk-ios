@@ -17,10 +17,11 @@
 #define bSettingsKey @"settings"
 #define bTwitterKey @"twitter"
 #define bGoogleKey @"google"
-#define bBackendlessKey @"backendless"
+#define bModules @"modules"
 
 #define bEnabledKey @"enabled"
 #define bPathKey @"path"
+#define bCloudMessagingServerKey @"cloud_messaging_server_key"
 #define bStorageKey @"storage_path"
 #define bAppIDKey @"app_id"
 #define bAppSecret @"app_secret"
@@ -101,6 +102,10 @@
     return [self string_s:@[bFirebaseKey, bPathKey]];
 }
 
++(NSString *) firebaseCloudMessagingServerKey {
+    return [self string_s:@[bFirebaseKey, bCloudMessagingServerKey]];
+}
+
 +(NSString *) firebaseStoragePath {
     return [self string_s:@[bFirebaseKey, bStorageKey]];
 }
@@ -131,16 +136,12 @@
     return [[self number_s:@[bSettingsKey, bUserChatInfoEnabledKey]] boolValue];
 }
 
-+(NSString *) backendlessAppId {
-    return [self string_s:@[bBackendlessKey, bAppIDKey]];
-}
-
-+(NSString *) backendlessSecretKey {
-    return [self string_s:@[bBackendlessKey, bAppSecret]];
-}
-
-+(NSString *) backendlessVersionKey {
-    return [self string_s:@[bBackendlessKey, bAppVersion]];
++(NSString *) property: (NSString *) property forModule: (NSString *) module {
+    NSDictionary * modules = self.settings[bModules];
+    if(modules) {
+        return modules[module][property];
+    }
+    return @{};
 }
 
 
